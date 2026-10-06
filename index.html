@@ -20,18 +20,27 @@
 <body>
 <main>
   <img src="icon-192.png" alt="">
+  <p id="hint" hidden style="max-width:20rem;margin:0 auto 14px;color:#c9cfe8;line-height:1.4">Tap the Share button, then <b>Add to Home Screen</b>.</p>
   <p><a id="go" href="https://sites.google.com/view/johnstonaerialmedia/home">Open Johnston Aerial</a></p>
 </main>
 <script>
-  // Prefer the main address; fall back to the Google Sites address if it can't be reached.
   var MAIN = 'https://www.johnstonaerial.com/';
   var FALLBACK = 'https://sites.google.com/view/johnstonaerialmedia/home';
+  var link = document.getElementById('go');
   var done = false;
   function go(u) { if (!done) { done = true; location.replace(u); } }
-  var timer = setTimeout(function () { go(FALLBACK); }, 4000);
-  fetch(MAIN, { mode: 'no-cors', cache: 'no-store' })
-    .then(function () { clearTimeout(timer); document.getElementById('go').href = MAIN; go(MAIN); })
-    .catch(function () { clearTimeout(timer); go(FALLBACK); });
+
+  // Setup mode: open home.johnstonaerial.com/?add to stay on this page and add it to the Home Screen.
+  if (/[?&]add\b/.test(location.search)) {
+    history.replaceState(null, '', location.pathname);
+    document.getElementById('hint').hidden = false;
+  } else {
+    // Prefer the main address; fall back to the Google Sites address if it can't be reached.
+    var timer = setTimeout(function () { go(FALLBACK); }, 4000);
+    fetch(MAIN, { mode: 'no-cors', cache: 'no-store' })
+      .then(function () { clearTimeout(timer); link.href = MAIN; go(MAIN); })
+      .catch(function () { clearTimeout(timer); go(FALLBACK); });
+  }
 </script>
 </body>
 </html>
