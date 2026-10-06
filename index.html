@@ -10,7 +10,6 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
-<meta http-equiv="refresh" content="0; url=https://johnstonaerial.com/">
 <style>
   html,body{height:100%;margin:0;background:#1d2552;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   body{display:flex;align-items:center;justify-content:center;text-align:center}
@@ -21,8 +20,18 @@
 <body>
 <main>
   <img src="icon-192.png" alt="">
-  <p><a href="https://johnstonaerial.com/">Open Johnston Aerial</a></p>
+  <p><a id="go" href="https://sites.google.com/view/johnstonaerialmedia/home">Open Johnston Aerial</a></p>
 </main>
-<script>location.replace('https://johnstonaerial.com/');</script>
+<script>
+  // Prefer the main address; fall back to the Google Sites address if it can't be reached.
+  var MAIN = 'https://www.johnstonaerial.com/';
+  var FALLBACK = 'https://sites.google.com/view/johnstonaerialmedia/home';
+  var done = false;
+  function go(u) { if (!done) { done = true; location.replace(u); } }
+  var timer = setTimeout(function () { go(FALLBACK); }, 4000);
+  fetch(MAIN, { mode: 'no-cors', cache: 'no-store' })
+    .then(function () { clearTimeout(timer); document.getElementById('go').href = MAIN; go(MAIN); })
+    .catch(function () { clearTimeout(timer); go(FALLBACK); });
+</script>
 </body>
 </html>
